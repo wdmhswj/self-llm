@@ -24,13 +24,13 @@ def process_func(example):
     }
 
 if __name__ == "__main__":
-    model = AutoModelForCausalLM.from_pretrained('./LLM-Research/Meta-Llama-3___1-8B-Instruct', device_map="auto",torch_dtype=torch.bfloat16)
+    model = AutoModelForCausalLM.from_pretrained('./LLM-Research/Meta-Llama-3___1-8B-Instruct', device_map={"": "cuda:0"},torch_dtype=torch.bfloat16)
     model.enable_input_require_grads() # 开启梯度检查点时，要执行该方法
     tokenizer = AutoTokenizer.from_pretrained('./LLM-Research/Meta-Llama-3___1-8B-Instruct', use_fast=False, trust_remote_code=True)
     tokenizer.pad_token = tokenizer.eos_token
 
     # 将JSON文件转换为CSV文件
-    df = pd.read_json('huanhuan.json')
+    df = pd.read_json('../../dataset/huanhuan.json')
     ds = Dataset.from_pandas(df)
     tokenized_id = ds.map(process_func, remove_columns=ds.column_names)
 
